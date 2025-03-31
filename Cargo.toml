@@ -1,0 +1,37 @@
+[workspace]
+members = ["firecrawl-sdk", "firecrawl-mcp"]
+# Only check / build main crates by default (check all with `--workspace`)
+default-members = ["firecrawl-sdk"]
+resolver = "2"
+
+[workspace.package]
+homepage = "https://github.com/washanhanzi/firecrawl-sdk"
+repository = "https://github.com/washanhanzi/firecrawl-sdk"
+license = "MIT"
+
+
+[workspace.dependencies]
+uuid = "1.10"
+tokio = "1"
+reqwest = "0.12"
+serde = "1.0"
+serde_json = "1.0"
+serde_with = "3.9"
+log = "0.4"
+thiserror = "2.0"
+schemars = "0.8"
+anyhow = "1.0"
+axum = "0.7"
+dotenv = "0.15"
+hyper = "1.0"
+rmcp = { version = "0.1", features = ["server"] }
+tower-http = "0.5"
+tracing = "0.1"
+tracing-subscriber = "0.3"
+firecrawl-sdk = { path = "./firecrawl-sdk", version = "0" }
+async-claude = "0.14"
+
+
+# dev dependencies
+assert_matches = "1.5"
+dotenvy = "0.15"

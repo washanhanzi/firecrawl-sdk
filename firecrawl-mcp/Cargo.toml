@@ -1,0 +1,38 @@
+[package]
+name = "firecrawl-mcp"
+version = "0.0.2"
+edition = "2021"
+description = "Rust SDK for Firecrawl MCP."
+
+[lib]
+path = "src/lib.rs"
+name = "firecrawl_mcp"
+
+[[bin]]
+name = "std_io"
+path = "src/bin/std_io.rs"
+
+[dependencies]
+tokio = { workspace = true, features = ["full"] } # Async runtime
+axum = { workspace = true } # Web framework
+hyper = { workspace = true, features = ["full"] } # HTTP types
+serde = { workspace = true, features = ["derive"] } # Serialization
+serde_json = { workspace = true } # JSON handling
+tracing = { workspace = true } # Logging
+tracing-subscriber = { workspace = true, features = [
+    "env-filter",
+] } # Logging setup
+dotenv = { workspace = true } # Environment variable management
+anyhow = { workspace = true } # Error handling
+tower-http = { workspace = true, features = ["cors"] } # CORS support
+schemars = { workspace = true } # JSON Schema generation
+serde_with = { workspace = true }
+rmcp = { workspace = true, features = [
+    "server",
+    "transport-io",
+    "transport-sse",
+    "transport-sse-server",
+] }
+firecrawl-sdk = { workspace = true, features = ["mcp_tool"] }
+async-claude = { workspace = true, features = ["tool"] }
+once_cell = "1.19.0"
