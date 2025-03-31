@@ -1,0 +1,35 @@
+[package]
+name = "firecrawl-sdk"
+authors = ["washanhanzi"]
+version = "0.0.1"
+edition = "2021"
+license = "MIT"
+repository = "https://github.com/washanhanzi/firecrawl-sdk"
+description = "Rust SDK for Firecrawl API."
+
+[lib]
+path = "src/lib.rs"
+name = "firecrawl_sdk"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[dependencies]
+reqwest = { version = "0.12", features = ["json", "blocking"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+serde_with = "3.9"
+log = "0.4"
+thiserror = "2.0"
+uuid = { version = "1.10", features = ["v4"] }
+tokio = { version = "1", features = ["full"] }
+schemars = { version = "0.8", optional = true }
+
+
+[dev-dependencies]
+clippy = "0"
+assert_matches = "1.5"
+dotenvy = "0.15"
+tokio = { version = "1", features = ["full"] }
+async-claude = { version = "0.13", features = ["tool"] }
+
+[features]
+mcp_tool = ["schemars"]
