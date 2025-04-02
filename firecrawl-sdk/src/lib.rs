@@ -8,6 +8,7 @@ pub mod document;
 mod error;
 pub mod map;
 pub mod scrape;
+pub mod search;
 
 use error::FirecrawlAPIError;
 pub use error::FirecrawlError;

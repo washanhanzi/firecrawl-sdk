@@ -62,6 +62,7 @@ impl From<CrawlScrapeFormats> for ScrapeFormats {
 #[serde(rename_all = "camelCase")]
 pub struct CrawlScrapeOptions {
     /// Formats to extract from the page. (default: `[ Markdown ]`)
+    #[cfg_attr(feature = "mcp_tool", schemars(skip))]
     pub formats: Option<Vec<CrawlScrapeFormats>>,
 
     /// Only extract the main content of the page, excluding navigation and other miscellaneous content. (default: `true`)
@@ -155,11 +156,11 @@ pub struct CrawlOptions {
 
 #[derive(Deserialize, Serialize, Debug, Default)]
 #[serde(rename_all = "camelCase")]
-struct CrawlRequestBody {
-    url: String,
+pub struct CrawlRequestBody {
+    pub url: String,
 
     #[serde(flatten)]
-    options: CrawlOptions,
+    pub options: CrawlOptions,
 }
 
 #[derive(Deserialize, Serialize, Debug, Default)]
@@ -247,7 +248,7 @@ impl FirecrawlApp {
 
         let response = self
             .client
-            .post(&format!("{}/{}/crawl", self.api_url, API_VERSION))
+            .post(format!("{}/{}/crawl", self.api_url, API_VERSION))
             .headers(headers.clone())
             .json(&body)
             .send()
@@ -305,7 +306,7 @@ impl FirecrawlApp {
     ) -> Result<CrawlStatus, FirecrawlError> {
         let response = self
             .client
-            .get(&format!(
+            .get(format!(
                 "{}/{}/crawl/{}",
                 self.api_url,
                 API_VERSION,
@@ -352,15 +353,12 @@ impl FirecrawlApp {
                 }
                 CrawlStatusTypes::Failed => {
                     break Err(FirecrawlError::CrawlJobFailed(
-                        format!("Crawl job failed."),
+                        "Crawl job failed.".to_string(),
                         status_data,
                     ));
                 }
                 CrawlStatusTypes::Cancelled => {
-                    break Err(FirecrawlError::CrawlJobFailed(
-                        format!("Crawl job was cancelled."),
-                        status_data,
-                    ));
+                    break Err(FirecrawlError::CrawlJobCancelled(status_data));
                 }
             }
         }

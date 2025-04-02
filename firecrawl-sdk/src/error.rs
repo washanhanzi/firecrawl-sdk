@@ -42,4 +42,6 @@ pub enum FirecrawlError {
     APIError(String, FirecrawlAPIError),
     #[error("Crawl job failed: {0}")]
     CrawlJobFailed(String, CrawlStatus),
+    #[error("Crawl job cancelled")]
+    CrawlJobCancelled(CrawlStatus),
 }

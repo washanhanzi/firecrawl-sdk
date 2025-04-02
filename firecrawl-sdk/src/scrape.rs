@@ -163,6 +163,7 @@ pub struct LocationOptions {
 #[serde(rename_all = "camelCase")]
 pub struct ScrapeOptions {
     /// Content formats to extract (default: `[ Markdown ]`)
+    #[cfg_attr(feature = "mcp_tool", schemars(skip))]
     pub formats: Option<Vec<ScrapeFormats>>,
 
     /// Extract only the main content, filtering out navigation, footers, etc. (default: `true`)
@@ -220,12 +221,13 @@ pub struct ScrapeOptions {
 }
 
 #[derive(Deserialize, Serialize, Debug, Default, Clone, PartialEq, Eq)]
+#[cfg_attr(feature = "mcp_tool", derive(JsonSchema))]
 #[serde(rename_all = "camelCase")]
-struct ScrapeRequestBody {
-    url: String,
+pub struct ScrapeRequestBody {
+    pub url: String,
 
     #[serde(flatten)]
-    options: ScrapeOptions,
+    pub options: ScrapeOptions,
 }
 
 #[derive(Deserialize, Serialize, Debug, Default, Clone, PartialEq, Eq)]
