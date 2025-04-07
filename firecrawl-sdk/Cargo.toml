@@ -1,7 +1,7 @@
 [package]
 name = "firecrawl-sdk"
 authors = ["washanhanzi"]
-version = "0.0.1"
+version = "0.0.2"
 edition = "2021"
 description = "Rust SDK for Firecrawl API."
 
