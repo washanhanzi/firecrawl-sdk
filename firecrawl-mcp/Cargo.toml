@@ -3,6 +3,9 @@ name = "firecrawl-mcp"
 version = "0.0.2"
 edition = "2021"
 description = "Rust SDK for Firecrawl MCP."
+homepage = "https://github.com/washanhanzi/firecrawl-sdk"
+repository = "https://github.com/washanhanzi/firecrawl-sdk"
+license = "MIT"
 
 [lib]
 path = "src/lib.rs"

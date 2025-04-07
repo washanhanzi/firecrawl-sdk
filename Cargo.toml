@@ -4,12 +4,6 @@ members = ["firecrawl-sdk", "firecrawl-mcp"]
 default-members = ["firecrawl-sdk"]
 resolver = "2"
 
-[workspace.package]
-homepage = "https://github.com/washanhanzi/firecrawl-sdk"
-repository = "https://github.com/washanhanzi/firecrawl-sdk"
-license = "MIT"
-
-
 [workspace.dependencies]
 uuid = "1.10"
 tokio = "1"
