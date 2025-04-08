@@ -31,6 +31,7 @@ struct ToolsContainer {
 
 static TOOLS: Lazy<ToolsContainer> = Lazy::new(|| ToolsContainer {
     tools: vec![
+        #[cfg(feature = "batch_scrape")]
         {
             let batch_scrape_tool = get_firecrawl_batch_scrape().unwrap();
             Tool {
@@ -45,6 +46,7 @@ static TOOLS: Lazy<ToolsContainer> = Lazy::new(|| ToolsContainer {
                 ),
             }
         },
+        #[cfg(feature = "crawl")]
         {
             let crawl_tool = get_firecrawl_crawl().unwrap();
             Tool {
@@ -59,6 +61,7 @@ static TOOLS: Lazy<ToolsContainer> = Lazy::new(|| ToolsContainer {
                 ),
             }
         },
+        #[cfg(feature = "map")]
         {
             let map_tool = get_firecrawl_map().unwrap();
             Tool {
@@ -73,6 +76,7 @@ static TOOLS: Lazy<ToolsContainer> = Lazy::new(|| ToolsContainer {
                 ),
             }
         },
+        #[cfg(feature = "scrape")]
         {
             let scrape_tool = get_firecrawl_scrape().unwrap();
             Tool {
@@ -87,6 +91,7 @@ static TOOLS: Lazy<ToolsContainer> = Lazy::new(|| ToolsContainer {
                 ),
             }
         },
+        #[cfg(feature = "search")]
         {
             let search_tool = get_firecrawl_search().unwrap();
             Tool {
@@ -137,6 +142,7 @@ impl ServerHandler for Controller {
         let params = request.arguments.unwrap();
 
         match tool_name.as_ref() {
+            #[cfg(feature = "batch_scrape")]
             "firecrawl_batch_scrape" => match self.batch_scrape(params).await {
                 Ok(result) => Ok(CallToolResult::success(vec![Content::text(result)])),
                 Err(err) => {
@@ -144,24 +150,28 @@ impl ServerHandler for Controller {
                     Err(err)
                 }
             },
+            #[cfg(feature = "crawl")]
             "firecrawl_crawl" => {
                 match self.crawl(params).await {
                     Ok(result) => Ok(CallToolResult::success(vec![Content::text(result)])),
                     Err(err) => Err(err), // crawl now returns rmcp::Error
                 }
             }
+            #[cfg(feature = "map")]
             "firecrawl_map" => {
                 match self.map(params).await {
                     Ok(result) => Ok(CallToolResult::success(vec![Content::text(result)])),
                     Err(err) => Err(err), // map now returns rmcp::Error
                 }
             }
+            #[cfg(feature = "scrape")]
             "firecrawl_scrape" => {
                 match self.scrape(params).await {
                     Ok(result) => Ok(CallToolResult::success(vec![Content::text(result)])),
                     Err(err) => Err(err), // scrape already returns rmcp::Error
                 }
             }
+            #[cfg(feature = "search")]
             "firecrawl_search" => match self.search(params).await {
                 Ok(result) => Ok(CallToolResult::success(vec![Content::text(result)])),
                 Err(err) => Err(McpError::internal_error(

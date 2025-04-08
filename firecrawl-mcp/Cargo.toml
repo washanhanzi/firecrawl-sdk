@@ -38,3 +38,12 @@ rmcp = { workspace = true, features = [
 firecrawl-sdk = { workspace = true, features = ["mcp_tool"] }
 async-claude = { workspace = true, features = ["tool"] }
 once_cell = { workspace = true }
+
+[features]
+default = ["batch_scrape", "crawl", "map", "scrape", "search"]
+batch_scrape = []
+crawl = []
+map = []
+scrape = []
+search = []
+tokio = []
