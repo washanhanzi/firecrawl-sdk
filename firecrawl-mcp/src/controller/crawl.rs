@@ -1,6 +1,10 @@
 use anyhow::Result;
 use async_claude::define_tool;
-use firecrawl_sdk::crawl::{CrawlScrapeFormats, CrawlScrapeOptions, CrawlUrlInput};
+use firecrawl_sdk::{
+    batch_scrape::Webhook,
+    crawl::CrawlUrlInput,
+    scrape::{ScrapeFormats, ScrapeOptions},
+};
 use rmcp::{handler::server::tool::parse_json_object, model::JsonObject, Error};
 
 use super::Controller;
@@ -19,14 +23,18 @@ impl Controller {
     pub async fn crawl(&self, input: JsonObject) -> Result<String, Error> {
         let mut options = parse_json_object::<CrawlUrlInput>(input)?;
 
+        if options.webhook.is_none() {
+            options.webhook = Some(Webhook::dummy());
+        }
+
         // Set the formats to Markdown regardless of whether scrape_options exists
         match &mut options.options.scrape_options {
             Some(scrape_options) => {
-                scrape_options.formats = Some(vec![CrawlScrapeFormats::Markdown]);
+                scrape_options.formats = Some(vec![ScrapeFormats::Markdown]);
             }
             None => {
-                options.options.scrape_options = Some(CrawlScrapeOptions {
-                    formats: Some(vec![CrawlScrapeFormats::Markdown]),
+                options.options.scrape_options = Some(ScrapeOptions {
+                    formats: Some(vec![ScrapeFormats::Markdown]),
                     ..Default::default()
                 });
             }
@@ -37,6 +45,7 @@ impl Controller {
             .crawl_url(
                 options.url,
                 Some(options.options),
+                options.webhook.unwrap(),
                 options.poll_interval,
                 None,
             )

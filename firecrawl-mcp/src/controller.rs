@@ -21,6 +21,7 @@ use scrape::get_firecrawl_scrape;
 use search::get_firecrawl_search;
 use std::borrow::Cow;
 use std::sync::Arc;
+use tracing::error;
 
 // Define static tools with Clone implementation
 #[derive(Clone)]
@@ -136,10 +137,23 @@ impl ServerHandler for Controller {
         let params = request.arguments.unwrap();
 
         match tool_name.as_ref() {
+            "firecrawl_batch_scrape" => match self.batch_scrape(params).await {
+                Ok(result) => Ok(CallToolResult::success(vec![Content::text(result)])),
+                Err(err) => {
+                    error!("Batch scraping URLs failed: {}", err);
+                    Err(err)
+                }
+            },
             "firecrawl_crawl" => {
                 match self.crawl(params).await {
                     Ok(result) => Ok(CallToolResult::success(vec![Content::text(result)])),
                     Err(err) => Err(err), // crawl now returns rmcp::Error
+                }
+            }
+            "firecrawl_map" => {
+                match self.map(params).await {
+                    Ok(result) => Ok(CallToolResult::success(vec![Content::text(result)])),
+                    Err(err) => Err(err), // map now returns rmcp::Error
                 }
             }
             "firecrawl_scrape" => {
@@ -148,11 +162,7 @@ impl ServerHandler for Controller {
                     Err(err) => Err(err), // scrape already returns rmcp::Error
                 }
             }
-            "firecrawl_map" => match self.map(params).await {
-                Ok(result) => Ok(CallToolResult::success(vec![Content::text(result)])),
-                Err(err) => Err(err),
-            },
-            "search" => match self.search(params).await {
+            "firecrawl_search" => match self.search(params).await {
                 Ok(result) => Ok(CallToolResult::success(vec![Content::text(result)])),
                 Err(err) => Err(McpError::internal_error(
                     format!("Search error: {}", err),

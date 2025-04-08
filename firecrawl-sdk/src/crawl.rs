@@ -6,6 +6,7 @@ use serde::{Deserialize, Serialize};
 use schemars::JsonSchema;
 
 use crate::{
+    batch_scrape::Webhook,
     document::Document,
     scrape::{ScrapeFormats, ScrapeOptions},
     FirecrawlApp, FirecrawlError, API_VERSION,
@@ -60,60 +61,9 @@ impl From<CrawlScrapeFormats> for ScrapeFormats {
 #[derive(Deserialize, Serialize, Debug, Default, Clone)]
 #[cfg_attr(feature = "mcp_tool", derive(JsonSchema))]
 #[serde(rename_all = "camelCase")]
-pub struct CrawlScrapeOptions {
-    /// Formats to extract from the page. (default: `[ Markdown ]`)
-    #[cfg_attr(feature = "mcp_tool", schemars(skip))]
-    pub formats: Option<Vec<CrawlScrapeFormats>>,
-
-    /// Extract only the main content, filtering out navigation, footers, etc.
-    pub only_main_content: Option<bool>,
-
-    /// HTML tags to exclusively include.
-    ///
-    /// For example, if you pass `div`, you will only get content from `<div>`s and their children.
-    pub include_tags: Option<Vec<String>>,
-
-    /// HTML tags to exclude.
-    ///
-    /// For example, if you pass `img`, you will never get image URLs in your results.
-    pub exclude_tags: Option<Vec<String>>,
-
-    /// Additional HTTP headers to use when loading the page.
-    #[cfg_attr(feature = "mcp_tool", schemars(skip))]
-    pub headers: Option<HashMap<String, String>>,
-
-    /// Time in milliseconds to wait for dynamic content to load. (default: 0)
-    pub wait_for: Option<u32>,
-
-    /// Timeout before returning an error, in milliseconds. (default: 60000)
-    #[cfg_attr(feature = "mcp_tool", schemars(skip))]
-    pub timeout: Option<u32>,
-}
-
-impl From<CrawlScrapeOptions> for ScrapeOptions {
-    fn from(value: CrawlScrapeOptions) -> Self {
-        ScrapeOptions {
-            formats: value
-                .formats
-                .map(|formats| formats.into_iter().map(|x| x.into()).collect()),
-            only_main_content: value.only_main_content,
-            include_tags: value.include_tags,
-            exclude_tags: value.exclude_tags,
-            headers: value.headers,
-            wait_for: value.wait_for,
-            timeout: value.timeout,
-            ..Default::default()
-        }
-    }
-}
-
-#[serde_with::skip_serializing_none]
-#[derive(Deserialize, Serialize, Debug, Default, Clone)]
-#[cfg_attr(feature = "mcp_tool", derive(JsonSchema))]
-#[serde(rename_all = "camelCase")]
 pub struct CrawlOptions {
     /// Options for scraping each page
-    pub scrape_options: Option<CrawlScrapeOptions>,
+    pub scrape_options: Option<ScrapeOptions>,
 
     /// Only crawl these URL paths
     pub include_paths: Option<Vec<String>>,
@@ -136,15 +86,11 @@ pub struct CrawlOptions {
     /// Allow crawling links to external domains. (default: `false`)
     pub allow_external_links: Option<bool>,
 
-    /// Webhook URL to notify when crawl is complete
-    pub webhook: Option<String>,
-
     /// Remove similar URLs during crawl
     #[serde(rename = "deduplicateSimilarURLs")]
     pub deduplicate_similar_urls: Option<bool>,
 
     /// Ignore query parameters when comparing URLs
-    #[serde(rename = "ignoreQueryParameters")]
     pub ignore_query_parameters: Option<bool>,
 }
 
@@ -156,6 +102,9 @@ pub struct CrawlRequestBody {
 
     #[serde(flatten)]
     pub options: CrawlOptions,
+
+    /// Webhook URL to notify when crawl is complete
+    pub webhook: Webhook,
 }
 
 #[derive(Deserialize, Serialize, Debug, Default)]
@@ -233,14 +182,17 @@ pub struct CrawlUrlInput {
     /// Starting URL for the crawl
     pub url: String,
 
-    /// How often the status of the job should be checked, in milliseconds. (default: `2000`)
-    pub poll_interval: Option<u64>,
-
     #[serde(flatten)]
     pub options: CrawlOptions,
 
+    /// How often the status of the job should be checked, in milliseconds. (default: `2000`)
+    pub poll_interval: Option<u64>,
+
     #[serde(skip)]
     pub idempotency_key: Option<String>,
+
+    /// Webhook URL to notify when crawl is complete, default to a dummy url
+    pub webhook: Option<Webhook>,
 }
 
 impl FirecrawlApp {
@@ -250,10 +202,12 @@ impl FirecrawlApp {
         url: impl AsRef<str>,
         options: Option<CrawlOptions>,
         idempotency_key: Option<String>,
+        webhook: Webhook,
     ) -> Result<CrawlAsyncResponse, FirecrawlError> {
         let body = CrawlRequestBody {
             url: url.as_ref().to_string(),
             options: options.unwrap_or_default(),
+            webhook,
         };
 
         let headers = self.prepare_headers(idempotency_key.as_ref());
@@ -276,13 +230,16 @@ impl FirecrawlApp {
         &self,
         url: impl AsRef<str>,
         options: impl Into<Option<CrawlOptions>>,
+        webhook: Webhook,
         poll_interval: Option<u64>,
         idempotency_key: Option<String>,
     ) -> Result<CrawlStatus, FirecrawlError> {
         let options = options.into();
         let poll_interval = poll_interval.unwrap_or(2000);
 
-        let res = self.crawl_url_async(url, options, idempotency_key).await?;
+        let res = self
+            .crawl_url_async(url, options, idempotency_key, webhook)
+            .await?;
 
         self.monitor_crawl_status(&res.id, poll_interval).await
     }

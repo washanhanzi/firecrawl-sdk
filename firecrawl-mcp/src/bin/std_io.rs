@@ -3,7 +3,7 @@ use firecrawl_mcp::controller::Controller;
 use firecrawl_sdk::FirecrawlApp;
 use rmcp::{transport::stdio, ServiceExt};
 use std::env;
-use tracing::error;
+use tracing::{error, info};
 use tracing_subscriber::{self, EnvFilter};
 
 /// npx @modelcontextprotocol/inspector cargo run -p mcp-server-examples --example std_io
@@ -16,7 +16,7 @@ async fn main() -> Result<()> {
         .with_ansi(false)
         .init();
 
-    tracing::info!("Starting MCP server");
+    info!("Starting MCP server");
 
     // Get API key from environment variable
     let api_key =

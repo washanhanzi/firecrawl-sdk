@@ -1,7 +1,9 @@
+use std::option;
+
 use anyhow::Result;
 use async_claude::define_tool;
 use firecrawl_sdk::{
-    batch_scrape::BatchScrapeUrlsInput,
+    batch_scrape::{BatchScrapeUrlsInput, Webhook},
     scrape::{ScrapeFormats, ScrapeOptions},
 };
 use rmcp::{handler::server::tool::parse_json_object, model::JsonObject};
@@ -21,6 +23,12 @@ impl Controller {
     pub async fn batch_scrape(&self, input: JsonObject) -> Result<String, rmcp::Error> {
         //deserialize the json object into a ScrapeOptions struct
         let mut options = parse_json_object::<BatchScrapeUrlsInput>(input)?;
+
+        //set a dummy webhook
+        if options.webhook.is_none() {
+            options.webhook = Some(Webhook::dummy());
+        }
+
         match &mut options.options {
             Some(scrape_options) => {
                 scrape_options.formats = Some(vec![ScrapeFormats::Markdown]);
@@ -40,7 +48,7 @@ impl Controller {
                 options.options,
                 options.poll_interval,
                 None,
-                None,
+                options.webhook.unwrap(),
                 Some(true),
             )
             .await

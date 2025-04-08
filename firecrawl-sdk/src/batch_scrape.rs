@@ -1,5 +1,6 @@
 use std::collections::HashMap;
 
+use log::info;
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 
@@ -10,8 +11,9 @@ use crate::{document::Document, scrape::ScrapeOptions, FirecrawlApp, FirecrawlEr
 
 #[serde_with::skip_serializing_none]
 #[derive(Deserialize, Serialize, Debug, Default, Clone, PartialEq, Eq)]
+#[cfg_attr(feature = "mcp_tool", derive(JsonSchema))]
 #[serde(rename_all = "camelCase")]
-pub struct BatchScrapeWebhook {
+pub struct Webhook {
     /// Webhook URL to notify when scraping is complete
     pub url: String,
 
@@ -25,6 +27,17 @@ pub struct BatchScrapeWebhook {
     pub events: Option<Vec<String>>,
 }
 
+impl Webhook {
+    pub fn dummy() -> Self {
+        Webhook {
+            url: "https://webhook.example.com".to_string(),
+            headers: None,
+            metadata: None,
+            events: None,
+        }
+    }
+}
+
 #[derive(Deserialize, Serialize, Debug, Default, Clone, PartialEq, Eq)]
 #[serde(rename_all = "camelCase")]
 pub struct BatchScrapeRequestBody {
@@ -32,9 +45,10 @@ pub struct BatchScrapeRequestBody {
     pub urls: Vec<String>,
 
     /// Webhook configuration for notifications
-    pub webhook: Option<BatchScrapeWebhook>,
+    pub webhook: Webhook,
 
     /// Whether to ignore invalid URLs
+    #[serde(rename = "ignoreInvalidURLs")]
     pub ignore_invalid_urls: Option<bool>,
 
     /// Scraping options
@@ -68,9 +82,8 @@ pub struct BatchScrapeUrlsInput {
     /// List of URLs to scrape
     pub urls: Vec<String>,
 
-    /// Webhook configuration for notifications
-    #[serde(skip)]
-    pub webhook: Option<BatchScrapeWebhook>,
+    /// Webhook configuration for notifications, the url default to a dummy url
+    pub webhook: Option<Webhook>,
 
     /// Whether to ignore invalid URLs
     #[serde(skip)]
@@ -141,7 +154,7 @@ impl FirecrawlApp {
         options: impl Into<Option<ScrapeOptions>>,
         poll_interval: Option<u64>,
         idempotency_key: Option<String>,
-        webhook: Option<BatchScrapeWebhook>,
+        webhook: Webhook,
         ignore_invalid_urls: Option<bool>,
     ) -> Result<BatchScrapeStatus, FirecrawlError> {
         let request_body = BatchScrapeRequestBody {
@@ -177,6 +190,8 @@ impl FirecrawlApp {
         id: &str,
     ) -> Result<BatchScrapeStatus, FirecrawlError> {
         let headers = self.prepare_headers(None);
+
+        println!("Checking batch scrape status for job: {}", id);
 
         let response = self
             .client
@@ -265,30 +280,6 @@ impl FirecrawlApp {
         self.handle_response::<BatchScrapeStatus>(response, "check batch scrape status")
             .await
     }
-
-    /// Scrapes multiple URLs in a single request using the Firecrawl API and waits for the results.
-    pub async fn batch_scrape_urls_and_wait(
-        &self,
-        urls: Vec<String>,
-        options: impl Into<Option<ScrapeOptions>>,
-        poll_interval: Option<u64>,
-        idempotency_key: Option<String>,
-        webhook: Option<BatchScrapeWebhook>,
-        ignore_invalid_urls: Option<bool>,
-    ) -> Result<Vec<Document>, FirecrawlError> {
-        let status = self
-            .batch_scrape_urls(
-                urls,
-                options,
-                poll_interval,
-                idempotency_key,
-                webhook,
-                ignore_invalid_urls,
-            )
-            .await?;
-
-        Ok(status.data)
-    }
 }
 
 #[cfg(test)]
@@ -345,12 +336,12 @@ mod tests {
         // Create the expected complete request body struct
         let expected_req_body = BatchScrapeRequestBody {
             urls: vec!["https://example.com".to_string()],
-            webhook: Some(BatchScrapeWebhook {
+            webhook: Webhook {
                 url: "https://webhook.example.com".to_string(),
                 headers: Some(HashMap::new()),
                 metadata: Some(HashMap::new()),
                 events: Some(vec!["completed".to_string()]),
-            }),
+            },
             ignore_invalid_urls: None, // This field wasn't in the JSON, so it should be None
             options: ScrapeOptions {
                 formats: Some(vec![ScrapeFormats::Markdown]),

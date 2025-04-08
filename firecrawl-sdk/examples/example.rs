@@ -1,4 +1,5 @@
 use firecrawl_sdk::{
+    batch_scrape::Webhook,
     crawl::CrawlOptions,
     scrape::{ExtractOptions, JsonOptions, ScrapeFormats, ScrapeOptions},
     FirecrawlApp,
@@ -28,7 +29,13 @@ async fn main() {
     };
 
     let crawl_result = app
-        .crawl_url("https://mendable.ai", crawl_options, None, None)
+        .crawl_url(
+            "https://mendable.ai",
+            crawl_options,
+            Webhook::dummy(),
+            None,
+            None,
+        )
         .await;
 
     match crawl_result {
