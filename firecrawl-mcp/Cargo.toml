@@ -1,7 +1,7 @@
 [package]
 name = "firecrawl-mcp"
 version = "0.0.3"
-edition = "2021"
+edition = "2024"
 description = "Rust SDK for Firecrawl MCP."
 homepage = "https://github.com/washanhanzi/firecrawl-sdk"
 repository = "https://github.com/washanhanzi/firecrawl-sdk"
@@ -16,18 +16,16 @@ name = "std_io"
 path = "src/bin/std_io.rs"
 
 [dependencies]
-tokio = { workspace = true, features = ["full"] } # Async runtime
-axum = { workspace = true } # Web framework
-hyper = { workspace = true, features = ["full"] } # HTTP types
-serde = { workspace = true, features = ["derive"] } # Serialization
-serde_json = { workspace = true } # JSON handling
-tracing = { workspace = true } # Logging
-tracing-subscriber = { workspace = true, features = [
-    "env-filter",
-] } # Logging setup
-dotenv = { workspace = true } # Environment variable management
-anyhow = { workspace = true } # Error handling
-schemars = { workspace = true } # JSON Schema generation
+tokio = { workspace = true, features = ["full"] }
+axum = { workspace = true }
+hyper = { workspace = true, features = ["full"] }
+serde = { workspace = true, features = ["derive"] }
+serde_json = { workspace = true }
+tracing = { workspace = true }
+tracing-subscriber = { workspace = true, features = ["env-filter"] }
+dotenv = { workspace = true }
+anyhow = { workspace = true }
+schemars = { workspace = true }
 serde_with = { workspace = true }
 rmcp = { workspace = true, features = [
     "server",
@@ -37,7 +35,6 @@ rmcp = { workspace = true, features = [
 ] }
 firecrawl-sdk = { workspace = true, features = ["mcp_tool"] }
 async-claude = { workspace = true, features = ["tool"] }
-once_cell = { workspace = true }
 
 [features]
 default = ["batch_scrape", "crawl", "map", "scrape", "search"]
@@ -46,4 +43,4 @@ crawl = []
 map = []
 scrape = []
 search = []
-tokio = []
+mpsc = []

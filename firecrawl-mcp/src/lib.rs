@@ -1,4 +1,4 @@
 pub mod controller;
 
-#[cfg(feature = "tokio")]
-mod tokio;
+#[cfg(feature = "mpsc")]
+pub mod mpsc;

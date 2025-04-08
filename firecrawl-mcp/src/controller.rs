@@ -1,42 +1,41 @@
+#[cfg(feature = "batch_scrape")]
 pub mod batch_scrape;
+#[cfg(feature = "crawl")]
 pub mod crawl;
+#[cfg(feature = "map")]
 pub mod map;
+#[cfg(feature = "scrape")]
 pub mod scrape;
+#[cfg(feature = "search")]
 pub mod search;
 
 use batch_scrape::get_firecrawl_batch_scrape;
 use crawl::get_firecrawl_crawl;
 use firecrawl_sdk::FirecrawlApp;
 use map::get_firecrawl_map;
-use once_cell::sync::Lazy;
 use rmcp::{
+    Error as McpError, RoleServer, ServerHandler,
     model::{
         CallToolRequestParam, CallToolResult, Content, Implementation, ListToolsResult,
         PaginatedRequestParam, ProtocolVersion, ServerCapabilities, ServerInfo, Tool,
     },
     service::RequestContext,
-    Error as McpError, RoleServer, ServerHandler,
 };
 use scrape::get_firecrawl_scrape;
 use search::get_firecrawl_search;
-use std::borrow::Cow;
-use std::sync::Arc;
+use std::sync::{Arc, LazyLock};
 use tracing::error;
 
-// Define static tools with Clone implementation
-#[derive(Clone)]
-struct ToolsContainer {
-    tools: Vec<Tool>,
-}
-
-static TOOLS: Lazy<ToolsContainer> = Lazy::new(|| ToolsContainer {
-    tools: vec![
+// Define the static tools using Arc<[Tool]> to avoid cloning
+pub static TOOLS: LazyLock<Arc<[Tool]>> = LazyLock::new(|| {
+    // Create a Vec and then convert it to Arc<[Tool]>
+    Arc::from(vec![
         #[cfg(feature = "batch_scrape")]
         {
             let batch_scrape_tool = get_firecrawl_batch_scrape().unwrap();
             Tool {
-                name: Cow::Owned(batch_scrape_tool.name.clone()),
-                description: Cow::Owned(batch_scrape_tool.description.clone().unwrap_or_default()),
+                name: batch_scrape_tool.name.clone(),
+                description: batch_scrape_tool.description.clone().unwrap_or_default(),
                 input_schema: Arc::new(
                     batch_scrape_tool
                         .input_schema
@@ -50,8 +49,8 @@ static TOOLS: Lazy<ToolsContainer> = Lazy::new(|| ToolsContainer {
         {
             let crawl_tool = get_firecrawl_crawl().unwrap();
             Tool {
-                name: Cow::Owned(crawl_tool.name.clone()),
-                description: Cow::Owned(crawl_tool.description.clone().unwrap_or_default()),
+                name: crawl_tool.name.clone(),
+                description: crawl_tool.description.clone().unwrap_or_default(),
                 input_schema: Arc::new(
                     crawl_tool
                         .input_schema
@@ -65,8 +64,8 @@ static TOOLS: Lazy<ToolsContainer> = Lazy::new(|| ToolsContainer {
         {
             let map_tool = get_firecrawl_map().unwrap();
             Tool {
-                name: Cow::Owned(map_tool.name.clone()),
-                description: Cow::Owned(map_tool.description.clone().unwrap_or_default()),
+                name: map_tool.name.clone(),
+                description: map_tool.description.clone().unwrap_or_default(),
                 input_schema: Arc::new(
                     map_tool
                         .input_schema
@@ -80,8 +79,8 @@ static TOOLS: Lazy<ToolsContainer> = Lazy::new(|| ToolsContainer {
         {
             let scrape_tool = get_firecrawl_scrape().unwrap();
             Tool {
-                name: Cow::Owned(scrape_tool.name.clone()),
-                description: Cow::Owned(scrape_tool.description.clone().unwrap_or_default()),
+                name: scrape_tool.name.clone(),
+                description: scrape_tool.description.clone().unwrap_or_default(),
                 input_schema: Arc::new(
                     scrape_tool
                         .input_schema
@@ -95,8 +94,8 @@ static TOOLS: Lazy<ToolsContainer> = Lazy::new(|| ToolsContainer {
         {
             let search_tool = get_firecrawl_search().unwrap();
             Tool {
-                name: Cow::Owned(search_tool.name.clone()),
-                description: Cow::Owned(search_tool.description.clone().unwrap_or_default()),
+                name: search_tool.name.clone(),
+                description: search_tool.description.clone().unwrap_or_default(),
                 input_schema: Arc::new(
                     search_tool
                         .input_schema
@@ -106,7 +105,7 @@ static TOOLS: Lazy<ToolsContainer> = Lazy::new(|| ToolsContainer {
                 ),
             }
         },
-    ],
+    ])
 });
 
 #[derive(Clone)]
@@ -191,13 +190,9 @@ impl ServerHandler for Controller {
         _request: PaginatedRequestParam,
         _context: RequestContext<RoleServer>,
     ) -> Result<ListToolsResult, McpError> {
-        // Simply return a clone of the static tools
-        // The clone is efficient because:
-        // 1. We're using Cow for strings which avoids cloning static strings
-        // 2. We're using Arc for input_schema which only clones the pointer
-        // 3. The ToolsContainer has a proper Clone implementation
+        // Just clone the Arc pointer, not the actual tools
         Ok(ListToolsResult {
-            tools: TOOLS.clone().tools,
+            tools: Vec::from(TOOLS.as_ref().clone()),
             next_cursor: None,
         })
     }

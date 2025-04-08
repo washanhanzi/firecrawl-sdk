@@ -2,7 +2,7 @@
 name = "firecrawl-sdk"
 authors = ["washanhanzi"]
 version = "0.0.3"
-edition = "2021"
+edition = "2024"
 description = "Rust SDK for Firecrawl API."
 homepage = "https://github.com/washanhanzi/firecrawl-sdk"
 repository = "https://github.com/washanhanzi/firecrawl-sdk"

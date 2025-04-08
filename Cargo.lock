@@ -49,9 +49,9 @@ checksum = "dcfed56ad506cb2c684a14971b8861fdc3baaaae314b9e5f9bb532cbe3ba7a4f"
 
 [[package]]
 name = "async-claude"
-version = "0.14.0"
+version = "0.15.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "122319830f3fe0de61756c25b9308cbe73df27217076dce025326702fc6e6f63"
+checksum = "7f4fa363ecc8cab0bf5ecd408e0823a4b493165b5f39e82059136d482b448521"
 dependencies = [
  "anyhow",
  "paste",
@@ -360,7 +360,6 @@ dependencies = [
  "dotenv",
  "firecrawl-sdk",
  "hyper",
- "once_cell",
  "rmcp",
  "schemars",
  "serde",
