@@ -1,5 +1,3 @@
-use std::option;
-
 use anyhow::Result;
 use async_claude::define_tool;
 use firecrawl_sdk::{

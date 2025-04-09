@@ -1,6 +1,6 @@
 [package]
 name = "firecrawl-mcp"
-version = "0.0.3"
+version = "0.0.4"
 edition = "2024"
 description = "Rust SDK for Firecrawl MCP."
 homepage = "https://github.com/washanhanzi/firecrawl-sdk"
@@ -29,12 +29,16 @@ schemars = { workspace = true }
 serde_with = { workspace = true }
 rmcp = { workspace = true, features = [
     "server",
+    "client",
     "transport-io",
     "transport-sse",
     "transport-sse-server",
 ] }
 firecrawl-sdk = { workspace = true, features = ["mcp_tool"] }
 async-claude = { workspace = true, features = ["tool"] }
+thiserror = { workspace = true }
+futures = { workspace = true }
+tokio-stream = { workspace = true }
 
 [features]
 default = ["batch_scrape", "crawl", "map", "scrape", "search"]
@@ -43,4 +47,3 @@ crawl = []
 map = []
 scrape = []
 search = []
-mpsc = []

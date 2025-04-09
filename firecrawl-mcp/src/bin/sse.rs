@@ -3,7 +3,7 @@ use firecrawl_mcp::controller::Controller;
 use firecrawl_sdk::FirecrawlApp;
 use rmcp::transport::sse_server::SseServer;
 use std::env;
-use tracing::{error, info};
+use tracing::info;
 use tracing_subscriber::{self, EnvFilter};
 
 #[tokio::main]
