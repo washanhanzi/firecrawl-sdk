@@ -8,8 +8,8 @@ use rmcp::{handler::server::tool::parse_json_object, model::JsonObject};
 
 use super::Controller;
 
-const BATCH_SCRAPE_TOOL_NAME: &str = "firecrawl_batch_scrape";
-const BATCH_SCRAPE_TOOL_DESCRIPTION: &str = "Scrape multiple URLs in batch mode.";
+pub const BATCH_SCRAPE_TOOL_NAME: &str = "firecrawl_batch_scrape";
+pub const BATCH_SCRAPE_TOOL_DESCRIPTION: &str = "Scrape multiple URLs in batch mode.";
 define_tool!(
     FIRECRAWL_BATCH_SCRAPE,
     BATCH_SCRAPE_TOOL_NAME,

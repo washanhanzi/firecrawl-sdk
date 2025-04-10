@@ -5,8 +5,8 @@ use rmcp::{handler::server::tool::parse_json_object, model::JsonObject};
 
 use super::Controller;
 
-const SCRAPE_TOOL_NAME: &str = "firecrawl_scrape";
-const SCRAPE_TOOL_DESCRIPTION: &str = "Scrape a single webpage with advanced options for content extraction. Supports various formats including markdown, HTML, and screenshots. Can execute custom actions like clicking or scrolling before scraping.";
+pub const SCRAPE_TOOL_NAME: &str = "firecrawl_scrape";
+pub const SCRAPE_TOOL_DESCRIPTION: &str = "Scrape a single webpage with advanced options for content extraction. Supports various formats including markdown, HTML, and screenshots. Can execute custom actions like clicking or scrolling before scraping.";
 define_tool!(
     FIRECRAWL_SCRAPE,
     SCRAPE_TOOL_NAME,

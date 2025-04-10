@@ -1,13 +1,23 @@
 #[cfg(feature = "batch_scrape")]
 pub mod batch_scrape;
+#[cfg(feature = "batch_scrape")]
+use batch_scrape::BATCH_SCRAPE_TOOL_NAME;
 #[cfg(feature = "crawl")]
 pub mod crawl;
+#[cfg(feature = "crawl")]
+use crawl::CRAWL_TOOL_NAME;
 #[cfg(feature = "map")]
 pub mod map;
+#[cfg(feature = "map")]
+use map::MAP_TOOL_NAME;
 #[cfg(feature = "scrape")]
 pub mod scrape;
+#[cfg(feature = "scrape")]
+use scrape::SCRAPE_TOOL_NAME;
 #[cfg(feature = "search")]
 pub mod search;
+#[cfg(feature = "search")]
+use search::SEARCH_TOOL_NAME;
 
 use batch_scrape::get_firecrawl_batch_scrape;
 use crawl::get_firecrawl_crawl;
@@ -142,7 +152,7 @@ impl ServerHandler for Controller {
 
         match tool_name.as_ref() {
             #[cfg(feature = "batch_scrape")]
-            "firecrawl_batch_scrape" => match self.batch_scrape(params).await {
+            BATCH_SCRAPE_TOOL_NAME => match self.batch_scrape(params).await {
                 Ok(result) => Ok(CallToolResult::success(vec![Content::text(result)])),
                 Err(err) => {
                     error!("Batch scraping URLs failed: {}", err);
@@ -150,28 +160,28 @@ impl ServerHandler for Controller {
                 }
             },
             #[cfg(feature = "crawl")]
-            "firecrawl_crawl" => {
+            CRAWL_TOOL_NAME => {
                 match self.crawl(params).await {
                     Ok(result) => Ok(CallToolResult::success(vec![Content::text(result)])),
                     Err(err) => Err(err), // crawl now returns rmcp::Error
                 }
             }
             #[cfg(feature = "map")]
-            "firecrawl_map" => {
+            MAP_TOOL_NAME => {
                 match self.map(params).await {
                     Ok(result) => Ok(CallToolResult::success(vec![Content::text(result)])),
                     Err(err) => Err(err), // map now returns rmcp::Error
                 }
             }
             #[cfg(feature = "scrape")]
-            "firecrawl_scrape" => {
+            SCRAPE_TOOL_NAME => {
                 match self.scrape(params).await {
                     Ok(result) => Ok(CallToolResult::success(vec![Content::text(result)])),
                     Err(err) => Err(err), // scrape already returns rmcp::Error
                 }
             }
             #[cfg(feature = "search")]
-            "firecrawl_search" => match self.search(params).await {
+            SEARCH_TOOL_NAME => match self.search(params).await {
                 Ok(result) => Ok(CallToolResult::success(vec![Content::text(result)])),
                 Err(err) => Err(McpError::internal_error(
                     format!("Search error: {}", err),
@@ -192,7 +202,7 @@ impl ServerHandler for Controller {
     ) -> Result<ListToolsResult, McpError> {
         // Just clone the Arc pointer, not the actual tools
         Ok(ListToolsResult {
-            tools: Vec::from(TOOLS.as_ref().clone()),
+            tools: Vec::from(TOOLS.as_ref()),
             next_cursor: None,
         })
     }

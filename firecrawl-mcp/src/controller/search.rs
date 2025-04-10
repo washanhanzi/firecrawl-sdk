@@ -4,8 +4,9 @@ use rmcp::{handler::server::tool::parse_json_object, model::JsonObject};
 
 use crate::controller::Controller;
 
-const SEARCH_TOOL_NAME: &str = "firecrawl_search";
-const SEARCH_TOOL_DESCRIPTION: &str = "Search and retrieve content from web pages with optional scraping. Returns SERP results by default (url, title, description) or full page content when scrapeOptions are provided.";
+pub const SEARCH_TOOL_NAME: &str = "firecrawl_search";
+pub const SEARCH_TOOL_DESCRIPTION: &str = "Search and retrieve content from web pages with optional scraping. Returns SERP results by default (url, title, description) or full page content when scrapeOptions are provided.";
+
 define_tool!(
     FIRECRAWL_SEARCH,
     SEARCH_TOOL_NAME,

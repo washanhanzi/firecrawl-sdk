@@ -5,13 +5,12 @@ use firecrawl_sdk::{
     crawl::CrawlUrlInput,
     scrape::{ScrapeFormats, ScrapeOptions},
 };
-use rmcp::{handler::server::tool::parse_json_object, model::JsonObject, Error};
+use rmcp::{Error, handler::server::tool::parse_json_object, model::JsonObject};
 
 use super::Controller;
 
-const CRAWL_TOOL_NAME: &str = "firecrawl_crawl";
-const CRAWL_TOOL_DESCRIPTION: &str =
-    "Crawl multiple pages from a starting URL. Supports depth control, path filtering, and webhook notifications.";
+pub const CRAWL_TOOL_NAME: &str = "firecrawl_crawl";
+pub const CRAWL_TOOL_DESCRIPTION: &str = "Crawl multiple pages from a starting URL. Supports depth control, path filtering, and webhook notifications.";
 define_tool!(
     FIRECRAWL_CRAWL,
     CRAWL_TOOL_NAME,

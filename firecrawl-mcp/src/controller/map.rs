@@ -5,9 +5,10 @@ use serde_json::json;
 
 use crate::controller::Controller;
 
-const MAP_TOOL_NAME: &str = "firecrawl_map";
-const MAP_TOOL_DESCRIPTION: &str =
+pub const MAP_TOOL_NAME: &str = "firecrawl_map";
+pub const MAP_TOOL_DESCRIPTION: &str =
     "Discover URLs from a starting point. Can use both sitemap.xml and HTML link discovery.";
+
 define_tool!(
     FIRECRAWL_MAP,
     MAP_TOOL_NAME,

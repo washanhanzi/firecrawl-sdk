@@ -18,7 +18,6 @@ A Model Context Protocol (MCP) server implementation that exposes Firecrawl func
 - map: include map tool
 - scrape: include scrape tool
 - search: include search tool
-- mpsc: include tokio mpsc transport
 
 ### Example
 
@@ -37,7 +36,4 @@ cargo run --package firecrawl-mcp --bin sse
 cargo build --package firecrawl-mcp --bin sse --no-default-features --features scrape
 ```
 
-## License
-
-This project is licensed under the [AGPL License](https://www.gnu.org/licenses/agpl-3.0.en.html).
-
+- for in-process transport, use [rmcp-in-process-transport](https://github.com/washanhanzi/rmcp-in-process-transport)
