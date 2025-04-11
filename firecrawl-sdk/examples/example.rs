@@ -1,8 +1,8 @@
 use firecrawl_sdk::{
+    FirecrawlApp,
     batch_scrape::Webhook,
     crawl::CrawlOptions,
-    scrape::{ExtractOptions, JsonOptions, ScrapeFormats, ScrapeOptions},
-    FirecrawlApp,
+    scrape::{JsonOptions, ScrapeFormats, ScrapeOptions},
 };
 use serde_json::json;
 

@@ -1,6 +1,5 @@
 use anyhow::Result;
 use firecrawl_mcp::FirecrawlMCP;
-use firecrawl_sdk::FirecrawlApp;
 use rmcp::transport::sse_server::SseServer;
 use std::env;
 use tracing::info;

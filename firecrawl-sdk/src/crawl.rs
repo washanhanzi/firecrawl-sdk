@@ -4,10 +4,10 @@ use serde::{Deserialize, Serialize};
 use schemars::JsonSchema;
 
 use crate::{
+    API_VERSION, FirecrawlApp, FirecrawlError,
     batch_scrape::Webhook,
     document::Document,
     scrape::{ScrapeFormats, ScrapeOptions},
-    FirecrawlApp, FirecrawlError, API_VERSION,
 };
 
 #[derive(Deserialize, Serialize, Clone, Copy, Debug)]
@@ -362,7 +362,6 @@ impl FirecrawlApp {
 mod schema_tests {
     use super::*;
     use async_claude;
-    use serde_json::json;
 
     #[test]
     fn test_crawl_options_schema() {
