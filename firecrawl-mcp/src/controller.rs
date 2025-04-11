@@ -1,23 +1,23 @@
 #[cfg(feature = "batch_scrape")]
 pub mod batch_scrape;
 #[cfg(feature = "batch_scrape")]
-use batch_scrape::{BATCH_SCRAPE_TOOL_NAME, get_firecrawl_batch_scrape};
+pub use batch_scrape::{BATCH_SCRAPE_TOOL_NAME, get_firecrawl_batch_scrape};
 #[cfg(feature = "crawl")]
 pub mod crawl;
 #[cfg(feature = "crawl")]
-use crawl::{CRAWL_TOOL_NAME, get_firecrawl_crawl};
+pub use crawl::{CRAWL_TOOL_NAME, get_firecrawl_crawl};
 #[cfg(feature = "map")]
 pub mod map;
 #[cfg(feature = "map")]
-use map::{MAP_TOOL_NAME, get_firecrawl_map};
+pub use map::{MAP_TOOL_NAME, get_firecrawl_map};
 #[cfg(feature = "scrape")]
 pub mod scrape;
 #[cfg(feature = "scrape")]
-use scrape::{SCRAPE_TOOL_NAME, get_firecrawl_scrape};
+pub use scrape::{SCRAPE_TOOL_NAME, get_firecrawl_scrape};
 #[cfg(feature = "search")]
 pub mod search;
 #[cfg(feature = "search")]
-use search::{SEARCH_TOOL_NAME, get_firecrawl_search};
+pub use search::{SEARCH_TOOL_NAME, get_firecrawl_search};
 
 use firecrawl_sdk::FirecrawlApp;
 use rmcp::{
