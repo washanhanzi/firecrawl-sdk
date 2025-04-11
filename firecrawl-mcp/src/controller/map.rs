@@ -3,7 +3,7 @@ use firecrawl_sdk::map::MapUrlInput;
 use rmcp::{handler::server::tool::parse_json_object, model::JsonObject};
 use serde_json::json;
 
-use crate::controller::Controller;
+use crate::controller::FirecrawlMCP;
 
 pub const MAP_TOOL_NAME: &str = "firecrawl_map";
 pub const MAP_TOOL_DESCRIPTION: &str =
@@ -16,7 +16,7 @@ define_tool!(
     MapUrlInput
 );
 
-impl Controller {
+impl FirecrawlMCP {
     pub async fn map(&self, input: JsonObject) -> Result<String, rmcp::Error> {
         // Deserialize the json object into a MapUrlInput struct
         let options = parse_json_object::<MapUrlInput>(input)?;

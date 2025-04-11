@@ -36,6 +36,18 @@ use search::get_firecrawl_search;
 use std::sync::{Arc, LazyLock};
 use tracing::error;
 
+/// Extension trait to convert FirecrawlApp into FirecrawlMCP
+pub trait IntoFirecrawlMCP {
+    /// Converts a FirecrawlApp instance into a FirecrawlMCP instance
+    fn into_mcp(self) -> FirecrawlMCP;
+}
+
+impl IntoFirecrawlMCP for FirecrawlApp {
+    fn into_mcp(self) -> FirecrawlMCP {
+        FirecrawlMCP::new_with_app(self)
+    }
+}
+
 // Define the static tools using Arc<[Tool]> to avoid cloning
 pub static TOOLS: LazyLock<Arc<[Tool]>> = LazyLock::new(|| {
     // Create a Vec and then convert it to Arc<[Tool]>
@@ -119,17 +131,29 @@ pub static TOOLS: LazyLock<Arc<[Tool]>> = LazyLock::new(|| {
 });
 
 #[derive(Clone)]
-pub struct Controller {
+pub struct FirecrawlMCP {
     pub client: FirecrawlApp,
 }
 
-impl Controller {
-    pub fn new(client: FirecrawlApp) -> Self {
-        Self { client }
+impl FirecrawlMCP {
+    pub fn new(api_key: impl AsRef<str>) -> Self {
+        Self {
+            client: FirecrawlApp::new(api_key).unwrap(),
+        }
+    }
+
+    pub fn new_with_app(app: FirecrawlApp) -> Self {
+        Self { client: app }
+    }
+
+    pub fn new_with_client(api_key: impl AsRef<str>, client: reqwest::Client) -> Self {
+        Self {
+            client: FirecrawlApp::new_with_client(api_key, client).unwrap(),
+        }
     }
 }
 
-impl ServerHandler for Controller {
+impl ServerHandler for FirecrawlMCP {
     fn get_info(&self) -> ServerInfo {
         ServerInfo {
             protocol_version: ProtocolVersion::V_2024_11_05,

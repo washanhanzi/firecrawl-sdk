@@ -27,6 +27,17 @@ impl FirecrawlApp {
         FirecrawlApp::new_selfhosted(CLOUD_API_URL, Some(api_key))
     }
 
+    pub fn new_with_client(
+        api_key: impl AsRef<str>,
+        client: Client,
+    ) -> Result<Self, FirecrawlError> {
+        Ok(FirecrawlApp {
+            api_key: Some(api_key.as_ref().to_string()),
+            api_url: CLOUD_API_URL.to_string(),
+            client,
+        })
+    }
+
     pub fn new_selfhosted(
         api_url: impl AsRef<str>,
         api_key: Option<impl AsRef<str>>,

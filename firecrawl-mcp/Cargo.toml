@@ -1,6 +1,6 @@
 [package]
 name = "firecrawl-mcp"
-version = "0.0.5"
+version = "0.1.0"
 edition = "2024"
 description = "Rust SDK for Firecrawl MCP."
 homepage = "https://github.com/washanhanzi/firecrawl-sdk"
@@ -17,16 +17,10 @@ path = "src/bin/std_io.rs"
 
 [dependencies]
 tokio = { workspace = true, features = ["full"] }
-axum = { workspace = true }
-hyper = { workspace = true, features = ["full"] }
-serde = { workspace = true, features = ["derive"] }
 serde_json = { workspace = true }
 tracing = { workspace = true }
 tracing-subscriber = { workspace = true, features = ["env-filter"] }
-dotenv = { workspace = true }
 anyhow = { workspace = true }
-schemars = { workspace = true }
-serde_with = { workspace = true }
 rmcp = { workspace = true, features = [
     "server",
     "client",
@@ -36,9 +30,10 @@ rmcp = { workspace = true, features = [
 ] }
 firecrawl-sdk = { workspace = true, features = ["mcp_tool"] }
 async-claude = { workspace = true, features = ["tool"] }
-thiserror = { workspace = true }
-futures = { workspace = true }
-tokio-stream = { workspace = true }
+reqwest = { workspace = true }
+
+[dev-dependencies]
+dotenv = { workspace = true }
 
 [features]
 default = ["batch_scrape", "crawl", "map", "scrape", "search"]

@@ -8,14 +8,11 @@ resolver = "2"
 license = "MIT"
 
 [workspace.dependencies]
-uuid = "1.10"
 tokio = { version = "1", features = [] }
-tokio-stream = "0.1" # Added tokio-stream for workspace
 reqwest = { version = "0.12", features = ["http2", "rustls-tls", "gzip"] }
 serde = "1.0"
 serde_json = "1.0"
 serde_with = "3.9"
-log = "0.4"
 thiserror = "2.0"
 schemars = "0.8"
 anyhow = "1.0"

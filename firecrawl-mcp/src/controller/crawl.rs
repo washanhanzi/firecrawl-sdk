@@ -7,7 +7,7 @@ use firecrawl_sdk::{
 };
 use rmcp::{Error, handler::server::tool::parse_json_object, model::JsonObject};
 
-use super::Controller;
+use super::FirecrawlMCP;
 
 pub const CRAWL_TOOL_NAME: &str = "firecrawl_crawl";
 pub const CRAWL_TOOL_DESCRIPTION: &str = "Crawl multiple pages from a starting URL. Supports depth control, path filtering, and webhook notifications.";
@@ -18,7 +18,7 @@ define_tool!(
     CrawlUrlInput
 );
 
-impl Controller {
+impl FirecrawlMCP {
     pub async fn crawl(&self, input: JsonObject) -> Result<String, Error> {
         let mut options = parse_json_object::<CrawlUrlInput>(input)?;
 

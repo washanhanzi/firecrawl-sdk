@@ -1,7 +1,7 @@
 use anyhow::Result;
-use firecrawl_mcp::controller::Controller;
+use firecrawl_mcp::FirecrawlMCP;
 use firecrawl_sdk::FirecrawlApp;
-use rmcp::{transport::stdio, ServiceExt};
+use rmcp::{ServiceExt, transport::stdio};
 use std::env;
 use tracing::{error, info};
 use tracing_subscriber::{self, EnvFilter};
@@ -22,11 +22,8 @@ async fn main() -> Result<()> {
     let api_key =
         env::var("FIRECRAWL_API_KEY").expect("FIRECRAWL_API_KEY environment variable must be set");
 
-    // Initialize the FirecrawlApp client with the API key
-    let firecrawl_client = FirecrawlApp::new(api_key)?;
-
     // Create a Controller instance
-    let controller = Controller::new(firecrawl_client);
+    let controller = FirecrawlMCP::new(api_key);
 
     // Create the service with our controller using stdio transport
     let service = controller.serve(stdio()).await.inspect_err(|e| {

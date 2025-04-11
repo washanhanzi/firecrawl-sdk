@@ -6,7 +6,7 @@ use firecrawl_sdk::{
 };
 use rmcp::{handler::server::tool::parse_json_object, model::JsonObject};
 
-use super::Controller;
+use super::FirecrawlMCP;
 
 pub const BATCH_SCRAPE_TOOL_NAME: &str = "firecrawl_batch_scrape";
 pub const BATCH_SCRAPE_TOOL_DESCRIPTION: &str = "Scrape multiple URLs in batch mode.";
@@ -17,7 +17,7 @@ define_tool!(
     BatchScrapeUrlsInput
 );
 
-impl Controller {
+impl FirecrawlMCP {
     pub async fn batch_scrape(&self, input: JsonObject) -> Result<String, rmcp::Error> {
         //deserialize the json object into a ScrapeOptions struct
         let mut options = parse_json_object::<BatchScrapeUrlsInput>(input)?;

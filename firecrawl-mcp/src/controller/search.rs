@@ -2,7 +2,7 @@ use async_claude::define_tool;
 use firecrawl_sdk::search::SearchInput;
 use rmcp::{handler::server::tool::parse_json_object, model::JsonObject};
 
-use crate::controller::Controller;
+use crate::controller::FirecrawlMCP;
 
 pub const SEARCH_TOOL_NAME: &str = "firecrawl_search";
 pub const SEARCH_TOOL_DESCRIPTION: &str = "Search and retrieve content from web pages with optional scraping. Returns SERP results by default (url, title, description) or full page content when scrapeOptions are provided.";
@@ -14,7 +14,7 @@ define_tool!(
     SearchInput
 );
 
-impl Controller {
+impl FirecrawlMCP {
     pub async fn search(&self, input: JsonObject) -> Result<String, rmcp::Error> {
         // Deserialize the json object into a SearchInput struct
         let options = parse_json_object::<SearchInput>(input)?;

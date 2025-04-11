@@ -1,5 +1,5 @@
 use anyhow::Result;
-use firecrawl_mcp::controller::Controller;
+use firecrawl_mcp::FirecrawlMCP;
 use firecrawl_sdk::FirecrawlApp;
 use rmcp::transport::sse_server::SseServer;
 use std::env;
@@ -27,11 +27,8 @@ async fn main() -> Result<()> {
         .parse::<u16>()
         .expect("PORT must be a valid number");
 
-    // Initialize the FirecrawlApp client with the API key
-    let firecrawl_client = FirecrawlApp::new(api_key)?;
-
     // Create a Controller instance
-    let controller = Controller::new(firecrawl_client);
+    let controller = FirecrawlMCP::new(api_key);
 
     // Create the bind address
     let bind_address = format!("0.0.0.0:{}", port);
