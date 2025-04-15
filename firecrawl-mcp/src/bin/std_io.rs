@@ -22,7 +22,7 @@ async fn main() -> Result<()> {
         env::var("FIRECRAWL_API_KEY").expect("FIRECRAWL_API_KEY environment variable must be set");
 
     // Create a Controller instance
-    let controller = FirecrawlMCP::new(api_key);
+    let controller = FirecrawlMCP::new(api_key, reqwest::Client::new());
 
     // Create the service with our controller using stdio transport
     let service = controller.serve(stdio()).await.inspect_err(|e| {

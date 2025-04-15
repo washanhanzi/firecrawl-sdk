@@ -1,6 +1,6 @@
 [package]
 name = "firecrawl-mcp"
-version = "0.1.3"
+version = "0.2.0"
 edition = "2024"
 description = "Rust SDK for Firecrawl MCP."
 homepage = "https://github.com/washanhanzi/firecrawl-sdk"

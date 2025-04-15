@@ -27,7 +27,7 @@ async fn main() -> Result<()> {
         .expect("PORT must be a valid number");
 
     // Create a Controller instance
-    let controller = FirecrawlMCP::new(api_key);
+    let controller = FirecrawlMCP::new(api_key, reqwest::Client::new());
 
     // Create the bind address
     let bind_address = format!("0.0.0.0:{}", port);

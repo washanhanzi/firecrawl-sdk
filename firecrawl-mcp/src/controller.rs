@@ -131,9 +131,9 @@ pub struct FirecrawlMCP {
 }
 
 impl FirecrawlMCP {
-    pub fn new(api_key: impl AsRef<str>) -> Self {
+    pub fn new(api_key: impl AsRef<str>, client: reqwest::Client) -> Self {
         Self {
-            client: FirecrawlApp::new(api_key).unwrap(),
+            client: FirecrawlApp::new_with_client(api_key, client).unwrap(),
         }
     }
 
@@ -141,9 +141,13 @@ impl FirecrawlMCP {
         Self { client: app }
     }
 
-    pub fn new_with_client(api_key: impl AsRef<str>, client: reqwest::Client) -> Self {
+    pub fn new_selfhosted(
+        api_url: impl AsRef<str>,
+        api_key: Option<impl AsRef<str>>,
+        client: reqwest::Client,
+    ) -> Self {
         Self {
-            client: FirecrawlApp::new_with_client(api_key, client).unwrap(),
+            client: FirecrawlApp::new_selfhosted_with_client(api_url, api_key, client).unwrap(),
         }
     }
 }
