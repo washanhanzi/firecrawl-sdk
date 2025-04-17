@@ -6,7 +6,7 @@ use serde_json::Value;
 #[cfg(feature = "mcp_tool")]
 use schemars::JsonSchema;
 
-use crate::{document::Document, FirecrawlApp, FirecrawlError, API_VERSION};
+use crate::{API_VERSION, FirecrawlApp, FirecrawlError, document::Document};
 
 #[derive(Deserialize, Serialize, Clone, Copy, Debug, PartialEq, Eq)]
 #[cfg_attr(feature = "mcp_tool", derive(JsonSchema))]
@@ -184,9 +184,11 @@ pub struct ScrapeOptions {
     pub json_options: Option<JsonOptions>,
 
     /// Location settings for scraping
+    #[cfg_attr(feature = "self_host", schemars(skip))]
     pub location: Option<LocationOptions>,
 
     /// List of actions to perform before scraping
+    #[cfg_attr(feature = "self_host", schemars(skip))]
     pub actions: Option<Vec<Action>>,
 
     /// Use mobile viewport. (default: `false`)

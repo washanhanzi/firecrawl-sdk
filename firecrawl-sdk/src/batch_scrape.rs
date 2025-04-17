@@ -6,7 +6,7 @@ use serde_json::Value;
 #[cfg(feature = "mcp_tool")]
 use schemars::JsonSchema;
 
-use crate::{document::Document, scrape::ScrapeOptions, FirecrawlApp, FirecrawlError, API_VERSION};
+use crate::{API_VERSION, FirecrawlApp, FirecrawlError, document::Document, scrape::ScrapeOptions};
 
 #[serde_with::skip_serializing_none]
 #[derive(Deserialize, Serialize, Debug, Default, Clone, PartialEq, Eq)]
