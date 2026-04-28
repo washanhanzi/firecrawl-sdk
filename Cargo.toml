@@ -9,22 +9,29 @@ license = "MIT"
 
 [workspace.dependencies]
 tokio = { version = "1", features = [] }
-reqwest = { version = "0.12", features = ["http2", "rustls-tls", "gzip"] }
+reqwest = { version = "0.13.3", features = ["http2", "rustls", "gzip"] }
 serde = "1.0"
 serde_json = "1.0"
 serde_with = "3.9"
 thiserror = "2.0"
 schemars = "1.0"
 anyhow = "1.0"
-axum = "0.7"
+axum = { version = "0.8", default-features = false, features = ["http1", "tokio"] }
 dotenv = "0.15"
 hyperr = { package = "hyper", version = "1", features = [] }
-rmcp = { version = "0.3", features = ["server"] }
+rmcp = { version = "1.5.0", features = [
+  "server",
+  "client",
+  "macros",
+  "transport-io",
+  "transport-streamable-http-server",
+] }
 tracing = "0.1"
 tracing-subscriber = "0.3"
 firecrawl-sdk = { path = "./firecrawl-sdk", version = "0.3" }
 async-claude = "0.15"
 futures = "0"
+tokio-util = "0.7"
 
 # dev dependencies
 assert_matches = "1"
