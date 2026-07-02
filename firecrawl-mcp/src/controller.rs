@@ -12,6 +12,8 @@ pub mod map;
 pub use map::{MAP_TOOL_NAME, get_firecrawl_map};
 #[cfg(feature = "scrape")]
 pub mod scrape;
+#[cfg(feature = "batch-scrape")]
+use rmcp::model::ContentBlock;
 #[cfg(feature = "scrape")]
 pub use scrape::{SCRAPE_TOOL_NAME, get_firecrawl_scrape};
 #[cfg(feature = "search")]
@@ -23,8 +25,8 @@ use firecrawl_sdk::FirecrawlApp;
 use rmcp::{
     ErrorData as McpError, RoleServer, ServerHandler,
     model::{
-        CallToolRequestParams, CallToolResult, Content, ListToolsResult,
-        PaginatedRequestParams, ProtocolVersion, ServerCapabilities, ServerInfo, Tool,
+        CallToolRequestParams, CallToolResult, ListToolsResult, PaginatedRequestParams,
+        ProtocolVersion, ServerCapabilities, ServerInfo, Tool,
     },
     service::RequestContext,
 };
@@ -171,7 +173,7 @@ impl ServerHandler for FirecrawlMCP {
         match tool_name.as_ref() {
             #[cfg(feature = "batch-scrape")]
             BATCH_SCRAPE_TOOL_NAME => match self.batch_scrape(params).await {
-                Ok(result) => Ok(CallToolResult::success(vec![Content::text(result)])),
+                Ok(result) => Ok(CallToolResult::success(vec![ContentBlock::text(result)])),
                 Err(err) => {
                     error!("Batch scraping URLs failed: {}", err);
                     Err(err)
@@ -179,22 +181,22 @@ impl ServerHandler for FirecrawlMCP {
             },
             #[cfg(feature = "crawl")]
             CRAWL_TOOL_NAME => match self.crawl(params).await {
-                Ok(result) => Ok(CallToolResult::success(vec![Content::text(result)])),
+                Ok(result) => Ok(CallToolResult::success(vec![ContentBlock::text(result)])),
                 Err(err) => Err(err),
             },
             #[cfg(feature = "map")]
             MAP_TOOL_NAME => match self.map(params).await {
-                Ok(result) => Ok(CallToolResult::success(vec![Content::text(result)])),
+                Ok(result) => Ok(CallToolResult::success(vec![ContentBlock::text(result)])),
                 Err(err) => Err(err),
             },
             #[cfg(feature = "scrape")]
             SCRAPE_TOOL_NAME => match self.scrape(params).await {
-                Ok(result) => Ok(CallToolResult::success(vec![Content::text(result)])),
+                Ok(result) => Ok(CallToolResult::success(vec![ContentBlock::text(result)])),
                 Err(err) => Err(err),
             },
             #[cfg(feature = "search")]
             SEARCH_TOOL_NAME => match self.search(params).await {
-                Ok(result) => Ok(CallToolResult::success(vec![Content::text(result)])),
+                Ok(result) => Ok(CallToolResult::success(vec![ContentBlock::text(result)])),
                 Err(err) => Err(McpError::internal_error(
                     format!("Search error: {}", err),
                     None,
